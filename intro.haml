@@ -1,0 +1,188 @@
+.slide
+  %h1 Intro to Clojure
+.slide
+  %h2 Selling Points
+  %ul
+    %li.slide
+      Heavy emphasis on immutability
+      %ul
+        %li Referential transparency
+        %li Prevents "action at a distance"
+    %li.slide
+      Built-in concurrency constructs
+      %ul
+        %li Hard: Locks, mutexes, semaphores
+        %li Better: Software Transactional Memory, Agents, Atoms, Refs, Vars
+    %li.slide
+      A Lisp
+      %ul
+        %li Homoiconicity - Code is data
+        %li Syntactic sugar for non-list data types
+    %li.slide
+      On the JVM (Clojure) or Node.JS/browser (ClojureScript)
+      %ul
+        %li Very easy to consume libraries
+        %li Makes deployment easier
+.slide
+  %h2 Immutability
+  %ul
+    %li.slide
+      Mutability causes bugs, action at a distance
+      :rubycode
+        # Ruby
+        puts data.inspect # => { vital_data: 1, other: 2 }
+
+        def evil_function(param)
+          param.delete(:vital_data)
+        end
+
+        evil_function(data)
+
+        puts data.inspect # => { other: 2 }
+.slide
+  %h2 Immutability in Clojure
+  %ul
+    %li.slide
+      Immutability implemented naïvely is inefficient
+      %ul
+        %li Lots of data copying
+    %li.slide
+      Implementation is both clever and elegant
+      %center
+        %table
+          %tbody
+            %tr
+              %td
+                :marked
+                  ![tree structure](http://blog.higher-order.net/files/clj/persistenthashmap1.png)
+              %td
+                :marked
+                  ![path copying](http://blog.higher-order.net/files/clj/persistenthashmap-pathcopy.png)
+        :marked
+          Highly recommended reading: [Karl Krukow blog post](http://blog.higher-order.net/2010/08/16/assoc-and-clojures-persistenthashmap-part-ii/)
+.slide
+  %h2 Concurrency
+  %ul
+    %li
+      Divided along two axes
+      %ul
+        %li Coordinated vs Uncoordinated
+        %li.slide Synchronous vs Asynchronous
+    %li.slide
+      Four built-in reference types
+      %ul
+        %li Coordinated synchronous: refs
+        %li Uncoordinated synchronous: atoms
+        %li Uncoordinated asynchronous: agents
+        %li (vars solve a different problem)
+.slide
+  %h2 Lots? of Irritating Silly Parentheses
+  :javascriptcode
+    var blah = function(x,y) {
+      var z = function(a,b) {
+        return 2 + 10 * a + 20 * b;
+      }
+      return z(x * 10, y * 2);
+    }
+  :clojurecode
+    (defn blah [x y]
+      (let [z (fn [a b]
+                (+ 2 (* 10 a) (* 20 b)))]
+        (z (* x 10) (* y 2)))
+.slide
+  %h2 Clojure Basics - Data types
+  :marked
+    * `nil`
+    * `true`, `false`
+    * numbers
+      * `long`s by default: `1234`
+      * ratios: `11/23`
+      * BigInt, BigDecimal
+    * Strings: `(class "asdf") ; => java.lang.String`
+    * Characters: `(map identity "asdf")` ; => `(\a \s \d \f)`
+    * `(first "\n")` ; => \newline
+    * Keywords: `(name :stringlike)` ; => "stringlike"
+    * Symbols: `'asdf` ; => asdf
+.slide
+  %h2 Clojure Basics - Collections
+  %ul
+    %li
+.slide
+  %h2 Thanks
+  %ul
+    %li
+      Thanks to
+      %a{:href => "http://catapultpgh.org/"} Catapult PGH
+      for hosting
+    %li
+      :marked
+        Bruce Adams [@bruceadams](https://twitter.com/bruceadams)
+    %li
+      %a{:href => "https://github.com/pittsburghclj"} Pittsburgh.clj GitHub
+    %li
+      %a{:href => "https://github.com/pittsburghclj"} These slides
+.slide
+  %h2 More resources
+  %ul
+    %li
+      Good Books
+      %ul
+        %li
+          Excellent introduction, tour of language:
+          :marked
+            [Clojure Programming](http://www.clojurebook.com/)
+          (better than:
+          :marked
+            [Programming Clojure](http://pragprog.com/book/shcloj2/programming-clojure)
+          )
+        %li
+          More philosophical "what makes Clojure different/fun"
+          :marked
+            [The Joy of Clojure](http://joyofclojure.com/)
+    %li
+      Blog posts
+      %ul
+        %li
+          Clojure's PersistentHashMap posts by Karl Krukow:
+          :marked
+            [part i](http://blog.higher-order.net/2009/09/08/understanding-clojures-persistenthashmap-deftwice/),
+            [part ii](http://blog.higher-order.net/2010/08/16/assoc-and-clojures-persistenthashmap-part-ii/)
+    %li
+      Talks
+      %ul
+        %li
+          Rich Hickey
+          :marked
+            [Are We There Yet?](http://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey),
+            [Simple Made Easy](http://www.infoq.com/presentations/Simple-Made-Easy) *highly recommended*
+.slide
+  %h2 Even more resources
+  %ul
+    %li
+      Web sites for practicing
+      %ul
+        %li
+          Practice problems
+          :marked
+            [4clojure](http://www.4clojure.com)
+        %li
+          Good for any language, but very math-heavy:
+          :marked
+            [Project Euler](http://projecteuler.net/)
+    %li
+      Web sites for reference
+      %ul
+        %li
+          Community documentation
+          :marked
+            [ClojureDocs](http://clojuredocs.org)
+        %li
+          Search over code (really useful for examples)
+          :marked
+            [{:get 'clojure}](http://getclojure.org/)
+            e.g. search for [conj](http://getclojure.org/search?q=conj&num=0)
+    %li
+      IRC
+      %ul
+        %li
+          \#clojure on freenode
