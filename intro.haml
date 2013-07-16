@@ -163,10 +163,15 @@
 .slide
   %h2 Clojure
   %ul
-    %li Introduction to syntax and semantics
+    %li Enough sales...
+    %li Rest of talk is introduction to Clojure coding
     %li
       :marked
-        [Himera](http://himera.herokuapp.com) - online ClojureScript repl. Follow along(!).
+        [Himera](http://himera.herokuapp.com) - online ClojureScript REPL by [@fogus](https://twitter.com/fogus).
+        Follow along(!).
+    %li
+      :marked
+        [http://himera.herokuapp.com](http://himera.herokuapp.com)
     %iframe{:src => "http://himera.herokuapp.com/index.html",
             :style => "width: 100%; min-height: 4in",
             :scrolling => "no"}
@@ -204,9 +209,19 @@
     (first "\n") ; => \newline
     (class \newline) ; => java.lang.Character
 
-    ;; Regular expressions
-    (class #"regular expressions") ; => java.util.regex.Pattern
+    #"regular expression"                       ;; Regular expressions
+    (class #"regular expressions")
+    ; => java.util.regex.Pattern
 
+    ; fewer backticks: #"\d" is like "\\d"
+
+    (re-seq #"." "asdf")
+    ; => ("a" "s" "d" "f")
+
+    (re-find #"sd" "blah asdf blah")
+    ; => "sd"
+    (re-find #"sd" "blah blah blah")
+    ; => nil
 
 .slide
   %h2 Clojure Basics - Collections
@@ -246,6 +261,10 @@
     ;; Reader macro #_
     #_(...) ; form is completely elided
     [1 #_2 3] ; => [1 3]
+
+    ;; #! shell compatibility
+    #!/usr/bin/clojure      ; not usually a thing,
+                            ; but would be ignored
 
 .slide.comment
   :clojurecode
@@ -287,23 +306,21 @@
         (eval (read-string "(first-item)"))
         ; => CompilerException ...
         ; Unable to resolve symbol: first-item
+    %li First item is resolved to something...
     %li
-      First item is resolved to something...
-      %ul
-        %li
-          If it's a function:
-          %ol
-            %li Evaluate the remaining items
-            %li Pass them as arguments to the function
-          :clojurecode
-            (x (y 1) (z "a"))
-            ; evaluate (y 1)
-            ;   evaluate 1 => 1
-            ;   call y with 1 => y-result
-            ; evaluate (z "a")
-            ;   evaluate "a" => 1
-            ;   call z with "a" => z-result
-            ; call x with y-result and z-result => x-result
+      If it's a function:
+      %ol
+        %li Evaluate the remaining items
+        %li Pass them as arguments to the function
+      :clojurecode
+        (x (y 1) (z "a"))
+        ; evaluate (y 1)
+        ;   evaluate 1 => 1
+        ;   call y with 1 => y-result
+        ; evaluate (z "a")
+        ;   evaluate "a" => 1
+        ;   call z with "a" => z-result
+        ; call x with y-result and z-result => x-result
 
 .slide
   %h2 Clojure evaluation - Special Forms
@@ -351,10 +368,11 @@
            '(a b c))
     
 .slide
-  %h2 Clojure Collection functions
+  %h2 Clojure Basics - Functions on hash maps
   :clojurecode
     (:a {:a 1 :b 2}) ; => 1                      ; keywords are functions
     (:a \#{:a :b}) ; => :a
+
     (0 [1 2 3]) ; => ClassCastException          ; longs are not
     ("a" {"a" 1}) ; => ClassCastException        ; nor are strings
 
@@ -491,8 +509,50 @@
     (five-adder 10 20) ; => 35
 
 .slide
+  %h2 Clojure threading macros
+  :clojurecode
+    (-> x form1 form2 ...)   ; passes x to form1, result to form2, etc. as first arg
+    (-> 1 (inc) (* 2) (/ 7)) ; => 4/7
+    (/ (* (inc 1) 2) 7)
+
+    (->> x form1 form2 ...)  ; passes x to form1, result to form2, etc. as last arg
+    (->> [:a :b] (map str) (apply str)) ; => ":a:b"
+    (apply str (map str [:a :b]))
+
+.slide
   %h2 Clojure Basics - Defining functions
   :clojurecode
+    ;; defn is a macro, which expands to def of a (fn) form
+    (defn entry-printer
+      "This is an example of binding" ; doc-string
+      [[key val]]
+      (println key " => " val))
+
+    (entry-printer [:a 1])
+    ; => prints:
+    ; :a => 1
+
+    (dorun (map entry-printer {:a 1 :b 2}))
+    ; => prints:
+    ; :a => 1
+    ; :b => 2
+    ; => nil
+
+.slide
+  %h2 Clojure Namespaces
+  %ul
+    %li (Not gonna lie: I still don't fully understand)
+    %li Map of symbols to vars
+    %li
+      :clojurecode
+        ;; ns macro
+        (ns some.namespace
+          (:require [clojure.repl :as repl])             ;; loads and aliases
+          (:require [clojure.repl])                      ;; just loads
+          (:use [clojure.repl]) ; discouraged            ;; imports everything
+          (:require [clojure.repl :refer (doc source)])  ;; import specific vars
+          (:import [java.lang String])                   ;; String is available
+          )
 
 .slide.comment
   %h2 Clojure Basics - Don't forget immutability
