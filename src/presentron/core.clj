@@ -17,6 +17,7 @@
   [filename]
   (try
     (as-html (response/response (slides/presentation filename)))
+    ;;(catch Exception e (response/response (.getMessage e)))
     (catch Exception e :next)))
 
 (defroutes presentron

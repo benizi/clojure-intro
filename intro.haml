@@ -1,32 +1,97 @@
 .slide
   %h1 Intro to Clojure
+
 .slide
-  %h2 Selling Points
+  %h2 About Me
   %ul
-    %li.slide
+    %li
+      :marked
+        [Benjamin R. Haskell](http://benizi.com):
+        Twitter [@benizi](https://twitter.com/benizi),
+        GitHub [@benizi](https://github.com/benizi)
+    %li
+      Day Job:
+      :marked
+        [4moms](http://www.4moms.com/)
+      (almost exclusively Ruby)
+    %li Worked professionally with Perl, .NET (C#, VB), JavaScript, PHP, Ruby
+    %li Run through tutorials on Python, Erlang, Haskell
+    %li
+      Like tools that require a lot of configuration/practice to "get":
+      %ul
+        %li Vim, Zsh, Linux, XMonad
+
+.slide
+  %h2 Clojure and Me
+  %ul
+    %li Interested in Clojure for about a year
+    %li No production experience
+    %li I hate virtually all of my Clojure code, despite making it publicly available
+    %li
+      :marked
+        Solved most [4clojure.com](https://www.4clojure.com) problems.
+      %ul
+        %li
+          :marked
+            user: [benizi](http://www.4clojure.com/user/benizi)
+        %li current rank: 14/16,325.
+        %li Quantity. Not quality.
+    %li
+      Built some toy apps:
+      %ul
+        %li
+          :marked
+            [yu2.be](http://yu2.be/)
+          %ul
+            %li really simple YouTube® link shortener
+            %li Running on Heroku
+
+.slide
+  %h2 Clojure and Me (cont.)
+  %ul
+    %li
+      :marked
+        [these slides](https://github.com/benizi/clojure-intro)
+      %ul
+        %li
+          :marked
+            [Ring](https://github.com/ring-clojure/ring)/[Compojure](https://github.com/weavejester/compojure) application                
+        %li that parses HAML/Markdown with jRuby
+        %li
+          Munges deck.js templates with
+          :marked
+            [enlive](https://github.com/cgrand/enlive)
+        %li Syntax highlighting with CodeRay (in Ruby)
+
+.slide
+  %h2 Clojure - Selling Points
+  %ul
+    %li
       Heavy emphasis on immutability
       %ul
         %li Referential transparency
         %li Prevents "action at a distance"
-    %li.slide
+    %li
       Built-in concurrency constructs
       %ul
         %li Hard: Locks, mutexes, semaphores
         %li Better: Software Transactional Memory, Agents, Atoms, Refs, Vars
-    %li.slide
+    %li
       A Lisp
       %ul
         %li Homoiconicity - Code is data
         %li Syntactic sugar for non-list data types
-    %li.slide
+    %li
       On the JVM (Clojure) or Node.JS/browser (ClojureScript)
       %ul
         %li Very easy to consume libraries
         %li Makes deployment easier
+    %li REPL: Read, Eval, Print, Loop
+
 .slide
   %h2 Immutability
   %ul
-    %li.slide
+    %li
       Mutability causes bugs, action at a distance
       :rubycode
         # Ruby
@@ -39,15 +104,20 @@
         evil_function(data)
 
         puts data.inspect # => { other: 2 }
+    %li
+      "But isn't immutability inefficient?"
+      %ul
+        %li Everything is "pass by value"
+        %li Lots of data copying
+
 .slide
   %h2 Immutability in Clojure
   %ul
-    %li.slide
-      Immutability implemented naïvely is inefficient
+    %li
+      Clojure implementations of most core data structures are clever and elegant (IMO)
       %ul
-        %li Lots of data copying
-    %li.slide
-      Implementation is both clever and elegant
+        %li Elegant: Structure sharing makes creation of "related" structures efficient
+        %li Clever: 5-bit indices squashed into 32-bit ints -> O(log<sub>32</sub>(N)) operations
       %center
         %table
           %tbody
@@ -67,15 +137,16 @@
       Divided along two axes
       %ul
         %li Coordinated vs Uncoordinated
-        %li.slide Synchronous vs Asynchronous
-    %li.slide
+        %li Synchronous vs Asynchronous
+    %li
       Four built-in reference types
       %ul
         %li Coordinated synchronous: refs
         %li Uncoordinated synchronous: atoms
         %li Uncoordinated asynchronous: agents
         %li (vars solve a different problem)
-.slide
+
+.slide.comment
   %h2 Lots? of Irritating Silly Parentheses
   :javascriptcode
     var blah = function(x,y) {
@@ -90,23 +161,367 @@
                 (+ 2 (* 10 a) (* 20 b)))]
         (z (* x 10) (* y 2)))
 .slide
+  %h2 Clojure
+  %ul
+    %li Introduction to syntax and semantics
+    %li
+      :marked
+        [Himera](http://himera.herokuapp.com) - online ClojureScript repl. Follow along(!).
+    %iframe{:src => "http://himera.herokuapp.com/index.html",
+            :style => "width: 100%; min-height: 4in",
+            :scrolling => "no"}
+
+.slide
   %h2 Clojure Basics - Data types
-  :marked
-    * `nil`
-    * `true`, `false`
-    * numbers
-      * `long`s by default: `1234`
-      * ratios: `11/23`
-      * BigInt, BigDecimal
-    * Strings: `(class "asdf") ; => java.lang.String`
-    * Characters: `(map identity "asdf")` ; => `(\a \s \d \f)`
-    * `(first "\n")` ; => \newline
-    * Keywords: `(name :stringlike)` ; => "stringlike"
-    * Symbols: `'asdf` ; => asdf
+  :clojurecode
+    nil      ; equivalent to Java null          ;; nil
+    
+    true                                        ;; Booleans
+    false    ; only nil and false are "falsey"
+
+    (map class [                                ;; Numbers
+      1      ; => java.lang.Long
+      1.2    ; => java.lang.Double
+      1/2    ; => clojure.lang.Ratio
+      1N     ; => clojure.lang.BigInt
+      1M     ; => java.math.BigDecimal
+    ])
+
+    (name :stringy) ; => "stringy"              ;; Keywords
+    ::resolved ; => :user/resolve
+    (in-ns 'whatever)
+    ::resolved ; => :whatever/resolve
+
+    'some-thing ; => some-thing                 ;; Symbols
+    'whatever/thing ; => whatever/thing
+
+.slide
+  %h2 Clojure Basics - String-like types
+  :clojurecode
+    (class "asdf") ; => java.lang.String        ;; Strings
+    ;; strings are sequences of characters
+    (map identity "asdf") ; => (\a \s \d \f)
+    (first "\n") ; => \newline
+    (class \newline) ; => java.lang.Character
+
+    ;; Regular expressions
+    (class #"regular expressions") ; => java.util.regex.Pattern
+
+
 .slide
   %h2 Clojure Basics - Collections
+  :clojurecode
+    (list 1 2 3) ; => (1 2 3)                   ;; Lists
+    '(1 2 3) ; => (1 2 3)                       ; quote prevents evaluation
+
+    [1 2 3]                                     ;; Vectors
+    (vec '(1 2 3))  ; => [1 2 3]
+    (vector 1 2 3)  ; => [1 2 3]
+    ([1 2 3] 0) ; => 1
+
+    {:a 1 :b 2}                                 ;; Maps
+    (hash-map :a 1 :b 2) ; => {:a 1, :b 2}
+    (sorted-map :a 1 :b 2) ; => {:a 1, :b 2}    ; (key) order retained
+    ({:a 1 :b 2} :a) ; => 1
+
+    \#{:a :b :c}                                 ;; Sets
+    (hash-set :a :b :c) ; => \#{:a :b :c}
+    (set [:a :b :c]) ; => \#{:a :b :c}
+    (sorted-set :a :b :c) ; => \#{:a :b :c}      ; order retained
+
+
+.slide
+  %h2 Clojure Basics - Comments
+  :clojurecode
+    ;; Several varieties of comments
+
+    ; line-based
+    ; everything after the semicolon is ignored by the reader
+
+    ;; function-like
+    (comment ...) ; => nil
+    [1 (comment 2) 3] ; => [1 nil 3]
+    (comment defn somefunction ...) ; most useful for top-level forms
+
+    ;; Reader macro #_
+    #_(...) ; form is completely elided
+    [1 #_2 3] ; => [1 3]
+
+.slide.comment
+  :clojurecode
+    ;; Vars
+    #'name ; => (var name)
+    
+    ;; Deref
+    @value ; => (deref value)
+
+    ;; Metadata
+    #^{:doc "string"} value ; => (with-meta value {:doc "string"})
+
+.slide
+  %h2 Clojure Basics - Order of operations
+  :clojurecode
+    ;; 1. Read - Convert string representation of data structures
+    (read-string "(1 2 3)") ; => (1 2 3)
+
+    ;; 2. Macro expansion - Recursively expand macros
+    (macroexpand '(defn foo [a] (+ 1 a)))
+    ; => (def foo (clojure.core/fn ([a] (+ 1 a))))
+
+    ;; 3. Evaluation - Most datatypes evaluate to themselves
+    (eval 1) ; => 1
+    (eval :keyword) ; => :keyword
+    (eval [1 2 3]) ; => [1 2 3]
+
+  %div.slide
+    :marked
+      I'm being hand-wavy. The actual situation is [...more complex](http://blog.fogus.me/2012/03/27/compiling-clojure-to-javascript-pt-3-the-himera-model/),
+      [especially for ClojureScript](http://blog.fogus.me/2012/04/25/the-clojurescript-compilation-pipeline/)
+
+.slide
+  %h2 Clojure evaluation - Lists
   %ul
     %li
+      Lists are special
+      :clojurecode
+        (eval (read-string "(first-item)"))
+        ; => CompilerException ...
+        ; Unable to resolve symbol: first-item
+    %li
+      First item is resolved to something...
+      %ul
+        %li
+          If it's a function:
+          %ol
+            %li Evaluate the remaining items
+            %li Pass them as arguments to the function
+          :clojurecode
+            (x (y 1) (z "a"))
+            ; evaluate (y 1)
+            ;   evaluate 1 => 1
+            ;   call y with 1 => y-result
+            ; evaluate (z "a")
+            ;   evaluate "a" => 1
+            ;   call z with "a" => z-result
+            ; call x with y-result and z-result => x-result
+
+.slide
+  %h2 Clojure evaluation - Special Forms
+  %ul
+    %li
+      If it's a special form, evaluate it specially
+      %ul
+        %li
+          %strong def
+          interns symbol in the current namespace
+          :clojurecode
+            (def symbol init?)
+          Special because it's very low-level
+        %li
+          %strong if
+          evaluates a test and then one of the two branches
+          :clojurecode
+            (if test       ; test is evaluated first
+              when-true    ; not evaluated if test is false
+              when-false)  ; not evaluated if test is true
+          Special because parts of the form need to remain unevaluated
+
+.slide
+  %h2 Clojure evaluation - Special Forms (cont.)
+  %ul
+    %li
+      %strong do
+      runs the forms it contains, discarding the results except the last
+      :clojurecode
+        (do
+          (println "Yay") ; => prints: Yay
+          1234) ; => evaluates to 1234
+    %li
+      %strong quote
+      prevents evaluation of its arguments
+      :clojurecode
+        (quote (rm-rf "/"))
+        ; => (rm-rf "/")
+      Special because its arguments are unevaluated
+    %li
+      Equivalent to the reader macro:
+      %strong '
+      :clojurecode
+        (= (quote (a b c))
+           '(a b c))
+    
+.slide
+  %h2 Clojure Collection functions
+  :clojurecode
+    (:a {:a 1 :b 2}) ; => 1                      ; keywords are functions
+    (:a \#{:a :b}) ; => :a
+    (0 [1 2 3]) ; => ClassCastException          ; longs are not
+    ("a" {"a" 1}) ; => ClassCastException        ; nor are strings
+
+    (get {:a 1 :b 2} :a) ; => 1                  ;; get
+    (get {:a 1 :b 2} :c) ; => nil                
+    (get {:a 1 :b 2} :c :default) ; => :default
+
+    (keys {:a 1 :b 2}) ; => (:a :b)
+    (vals {:a 1 :b 2}) ; => (1 2)
+    
+    (assoc {:a 1} :b 2) ; => {:a 1 :b 2}
+    (dissoc {:a 1 :b 2} :b) ; => {:a 1}
+
+.slide
+  %h2 Clojure Basics - Sequences
+  :clojurecode
+    (cons 4 '(1 2 3)) ; => (4 1 2 3)             ;; (cons first rest)
+    (cons 4 [1 2 3])  ; => (4 1 2 3)             ; cons[tructs] a new seq
+    (cons 4 \#{1 2 3}) ; => (4 1 2 3)             ; by appending first to the rest
+    (cons [:b 2] {:a 1}) ; => ([:b 2] [:a 1])
+
+    (conj '(1 2 3) 4) ; => (4 1 2 3)             ;; (conj coll item)
+    (conj [1 2 3] 4) ; => [1 2 3 4]              ; conj[oins] efficiently
+    (conj \#{1 2 3} 4) ; => \#{1 2 3 4}            ; (usually same concrete type)
+    (conj {:a 1} [:b 2]) ; => {:b 2, :a 1}       ; position depends on concrete type
+
+    (into [] 1 2 3 4) ; => [1 2 3 4]             ;; (into coll a b c ...)
+    (into \#{} 1 2 3 4) ; => \#{1 3 2 4}           ; conj[oins] the rest of its
+    (into {} [:a 1] [:b 2]) ; => {:a 1, :b 2}    ; arguments into the first
+
+.slide
+  %h2 Clojure Let, binding forms
+  :clojurecode
+    (let [forms] body) ; Evaluate body with local bindings as expressed by [forms]
+
+    ;; Many binding forms:
+
+    name value         ; binds value to name
+    (let [a (+ 1 2 3)]
+      a) ; => 6
+
+    [a b ...] value    ; binds a to first element of value
+                       ; binds b to second element of value
+                       ; ...
+    (let [[a b] '(x y)]
+      (prn {:a a :b b})) ; => prints: {:a x, :b y}
+
+.slide
+  %h2 Clojure Let, binding forms (cont.)
+  :clojurecode
+    ;; Map-like binding forms
+
+    (def req {:request-type :get, :url "/"}) ; for use below
+
+    {name :key}        ; pulls :key out of a map-like
+    (let [{x :request-type} req]
+      x) ; => :get
+
+    {:keys [a b c]}    ; pull multiple keys at once,
+                       ; where key is same as name
+    (let [{:keys [request-type url]} req]
+      (str "TYPE: " request-type " for " url))
+    ; => "TYPE: :get for /"
+
+    {:keys [...] :as name}  ; also assign the whole map-like to name
+    (let [{:keys [url] :as r} req]
+      (= r req)) ; => true
+
+.slide
+  %h2 Lazy sequences
+  :clojurecode
+    ;; range with no args generates integers starting at 0
+    (range) ; => returns lazy sequence: (0 1 2 3 4 ...)
+    (range x) ; => returns 0 to (dec x)
+    (range x y) ; => returns x to (dec y)
+
+    ;; take, drop, and nth can limit the laziness
+    (take 4 (range)) ; => (0 1 2 3)
+    (drop 5 (range)) ; => lazy sequence: (5 6 7 8 ...)
+    (drop 5 (take 8 (range))) ; => (5 6 7)
+
+    (nth (range) 20) ; => 20
+    (nth (range) 0) ; => 0
+
+.slide
+  %h2 Functional programming
+  :clojurecode
+    ;; Apply a function with a collection as its arguments
+    (apply + [1 2 3 4]) ; => 10
+    ; same as: (+ 1 2 3 4)
+
+    ;; Apply a function with successive items of collections in turn
+    (map f collection)
+    ; => '((f (first collection))
+    ;      (f (second collection))
+    ;      ...)
+
+    (map identity [1 2 3]) ; => (1 2 3)          ;; result is list
+    (map identity '(1 2 3)) ; => (1 2 3)
+    (map identity \#{1 2 3}) ; => (1 2 3)
+
+    (map str [{:a 1} [1 2] \#{:a :b}])
+    ; => ("{:a 1}" "[1 2]" "{:a :b}")
+
+    ;; multiple collections stop when the shortest ends
+    (map vector [:a :b :c] (range))
+    ; => ((vector :a 0) (vector :b 1) (vector :c 2))
+    ; => ([:a 0] [:b 1] [:c 2])
+
+.slide
+  %h2 Functional programming
+  :clojurecode
+    ;; Fold over a list
+    (reduce f initial-value? collection)
+    (reduce + 0 [1 2 3 4])
+    ; => like repeatedly doing: (f value next-value)
+    ; => (+ 0 1) => 1
+    ; => (+ 1 2) => 3
+    ; => (+ 3 3) => 6
+    ; => (+ 6 4) => 10
+
+    ;; Composition
+    (comp f g) ; => function that applies g, then f to the result
+    (comp inc -) ; => function that negates, then increments
+    ((comp inc -) 42) ; => -41
+
+    ;; Partial application
+    (partial f other-args...) ; => function that applies f to args and other-args
+
+    (def map-inc (partial map inc))
+    (map-inc [1 2 3 4]) ; => (2 3 4 5)
+
+    (def five-adder (partial + 5))
+    (five-adder 10 20) ; => 35
+
+.slide
+  %h2 Clojure Basics - Defining functions
+  :clojurecode
+
+.slide.comment
+  %h2 Clojure Basics - Don't forget immutability
+  :clojurecode
+    (def a {:a 1})   ; => #'user/a
+    (assoc a :b 2)   ; => {:a 1 :b 2}
+    a                ; => {:a 1}
+
+.slide
+  %h2 Clojure evaluation - my experience
+  %div Some things that have helped me (maybe) understand what's going on
+  %ul
+    %li Don't think in "infix": think of (x y z) as "apply x to y and z"
+    %li
+      :clojurecode
+        (+ 1 2 3) ; "apply sum to 1, 2, and 3"
+        (< 1 2)   ; "apply 'in-order' to 1 and 2     ; => true
+        (< 1 2 3) ; "apply 'in-order' to 1, 2, and 3 ; => true
+    %li Hard to remember early on when things need to be in a list
+    %li If you want it to be evaluated, put it in a list
+    %li If you don't want evaluation, quote it, or use a vector
+
+.slide.comment
+  %h2 Clojure Basics - Reference types - refs
+  %ul
+    %li Provides a wrapper around a normal entity
+    %li Coordinates access to that entity
+    %li Access is only available within a transaction
+
 .slide
   %h2 Thanks
   %ul

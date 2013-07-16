@@ -36,6 +36,12 @@
       ;; (html/transform [(html/attr? :kind)] (html/content "code yay"))
       ))
 
+(defn without-comments
+  "Removes slides that have class .comment"
+  [nodes]
+  (-> nodes
+      (html/transform [:.slide.comment] nil)))
+
 (defn with-markdown
   "Render Markdown content"
   [nodes]
@@ -58,5 +64,6 @@
     (-> deck-js
         with-style
         (with-slides slides)
+        without-comments
         with-markdown
         render)))
