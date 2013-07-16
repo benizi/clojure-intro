@@ -200,6 +200,9 @@
     (first "\n") ; => \newline
     (class \newline) ; => java.lang.Character
 
+    (def item "yay")
+    (str "a" item "b") ; => "ayayb"             ; str stringifies and joins
+
     #"regular expression"                       ;; Regular expressions
     (class #"regular expressions")
     ; => java.util.regex.Pattern
@@ -533,16 +536,21 @@
   %h2 Clojure Namespaces
   %ul
     %li Map of symbols to vars
+    %li Named like Java packages (reverse domain names)
     %li
-      :clojurecode
-        ;; ns macro
-        (ns some.namespace
-          (:require [clojure.repl :as repl])             ;; loads and aliases
-          (:require [clojure.repl])                      ;; just loads
-          (:use [clojure.repl]) ; discouraged            ;; imports everything
-          (:require [clojure.repl :refer (doc source)])  ;; import specific vars
-          (:import [java.lang String])                   ;; String is available
-          )
+      Example:
+      :marked
+        `com.benizi.superlibrary`
+
+  :clojurecode
+    ;; ns macro
+    (ns some.namespace
+      (:require [clojure.repl :as repl])             ;; loads and aliases
+      (:require [clojure.repl])                      ;; just loads
+      (:use [clojure.repl]) ; discouraged            ;; imports everything
+      (:require [clojure.repl :refer (doc source)])  ;; import specific vars
+      (:import [java.lang String])                   ;; String is available
+      ...)
 
 .slide.comment
   %h2 Clojure Basics - Don't forget immutability
@@ -630,6 +638,12 @@
           Practice problems
           :marked
             [4clojure](http://www.4clojure.com)
+          %ul
+            %li
+              :marked
+                user: [benizi](http://www.4clojure.com/user/benizi)
+            %li current rank: 14/16,325.
+            %li Quantity. Not quality.
         %li
           Good for any language, but very math-heavy:
           :marked
