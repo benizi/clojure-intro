@@ -1,4 +1,5 @@
 (ns presentron.ruby
+  (:require [clojure.string :as string])
   (:import [java.io File]
            [org.jruby.embed ScriptingContainer]))
 
@@ -45,4 +46,4 @@ end
 
 engine = Haml::Engine.new(html)
 engine.render.gsub(\"&#x000A;\", \"\\n\")
-" :vars {"html" text}))
+" :vars {"html" (string/replace text "#{" "\\#{")}))
