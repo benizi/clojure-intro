@@ -31,4 +31,4 @@
   (route/not-found "Route not found"))
 
 (defn -main [& [port]]
-  (run-jetty (handler/api presentron) {:port (Integer. (or port (System/getenv "PORT")))}))
+  (run-jetty (handler/api presentron) {:port (Integer. (or port (System/getenv "PORT") 5000))}))
