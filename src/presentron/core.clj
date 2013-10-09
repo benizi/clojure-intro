@@ -10,7 +10,7 @@
 (defn as-html
   "Marks a response as HTML"
   [response]
-  (response/content-type response "text/html"))
+  (response/content-type response "text/html;charset=utf-8"))
 
 (defn slide-response
   "Returns a response for the slides in a given HAML file"
