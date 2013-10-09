@@ -5,7 +5,8 @@
             [compojure.route :as route]
             [compojure.handler :as handler]
             [ring.adapter.jetty :refer (run-jetty)]
-            [ring.util.response :as response]))
+            [ring.util.response :as response]
+            [clojure.stacktrace :refer (print-stack-trace)]))
 
 (defn as-html
   "Marks a response as HTML"
@@ -15,10 +16,11 @@
 (defn slide-response
   "Returns a response for the slides in a given HAML file"
   [filename]
-  (try
-    (as-html (response/response (slides/presentation filename)))
-    ;;(catch Exception e (response/response (.getMessage e)))
-    (catch Exception e :next)))
+  (if (.exists (java.io.File. filename))
+    (try
+      (as-html (response/response (slides/presentation filename)))
+      (catch Exception e (response/response (with-out-str (print-stack-trace e)))))
+    :next))
 
 (defroutes presentron
   (GET "/" [] (slide-response "intro.haml"))
