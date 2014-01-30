@@ -1,0 +1,46 @@
+GIT
+  remote: git://github.com/github/linguist.git
+  revision: e6f38cbf45b3740498754bd47264e18b4f3044a5
+  specs:
+    github-linguist (2.9.2)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.3.1)
+      mime-types (~> 1.19)
+      pygments.rb (~> 0.5.2)
+
+GIT
+  remote: git://github.com/tmm1/pygments.rb.git
+  revision: e87424cb58dbb23fb25f0ea4814b2d9695802ea2
+  specs:
+    pygments.rb (0.5.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (3.2.14)
+      i18n (~> 0.6, >= 0.6.4)
+      multi_json (~> 1.0)
+    charlock_holmes (0.6.9.4)
+    coderay (1.0.9)
+    escape_utils (0.3.2)
+    haml (4.0.3)
+      tilt
+    i18n (0.6.4)
+    mime-types (1.23)
+    multi_json (1.7.7)
+    posix-spawn (0.3.6)
+    tilt (1.4.1)
+    yajl-ruby (1.1.0)
+
+PLATFORMS
+  java
+  ruby
+
+DEPENDENCIES
+  activesupport (~> 3.2.12)
+  coderay
+  github-linguist!
+  haml
+  pygments.rb!
