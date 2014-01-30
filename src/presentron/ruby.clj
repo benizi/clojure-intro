@@ -1,49 +1,39 @@
 (ns presentron.ruby
-  (:require [clojure.string :as string])
-  (:import [java.io File]
-           [org.jruby.embed ScriptingContainer]))
+  (:require [clojure.string :as string]
+            [clojure.java.shell :as shell]
+            [clojure.java.io :as io]))
 
-(defn- in-ruby
-  [string & {:keys [vars]}]
-  (let [c (ScriptingContainer.)]
-    (do
-      (dorun
-       (map (fn [[k v]] (.put c (name k) v))
-            (or vars {})))
-      (.runScriptlet c string))))
+(defn parser []
+  (-> "haml-to-html.rb"
+      io/resource
+      io/reader
+      slurp))
+
+(def *parser* (parser))
+
+(defn run-parser
+  [stdin]
+  (shell/sh "bundle" "exec" "ruby" "-e" (parser)
+            :in stdin))
+
+(defn css-styles
+  []
+  (-> (shell/sh
+       "bundle" "exec"
+       "ruby" "-rbundler/setup"
+       "-e" "Bundler.require :default ; Pygments.styles.each { |s| puts Pygments.css(\".highlight.#{s}\", style:s) }")
+      :out))
+
+(def css (css-styles))
+
+(defn safe
+  "Escape evaluation characters"
+  [ruby]
+  (string/replace ruby "#{" "\\#{"))
 
 (defn parse-haml
   [text]
-  (in-ruby "
-require \"rubygems\"
-require \"haml\"
-require \"coderay\"
-require \"active_support/core_ext/string\"
-
-CodeRay::Scanners.list.each do |scanner|
-  mod_name = \"#{scanner}\".classify
-  # warn \"Installing Haml::Filters::#{mod_name}Code\"
-  eval <<-SCANNER
-    module Haml::Filters::#{mod_name}Code
-      include Haml::Filters::Base
-      def render(text)
-        begin
-          CodeRay.scan(text, :#{scanner}).div.sub(/(?<=\"CodeRay\")(?=>)/, \"kind=\\\\\"#{mod_name}\\\\\"\")
-        rescue => e
-          \"<pre>\" + e.message + \"</pre>\"
-        end
-      end
-    end
-  SCANNER
-end
-
-module Haml::Filters::Marked
-  include Haml::Filters::Base
-  def render(text)
-    %Q{<markdown>#{text}</markdown>}
-  end
-end
-
-engine = Haml::Engine.new(html)
-engine.render.gsub(\"&#x000A;\", \"\\n\")
-" :vars {"html" (string/replace text "#{" "\\#{")}))
+  (let [{:keys [out err exit]} (run-parser (safe text))]
+    (if (zero? exit)
+      out
+      (throw (Exception. (str "parse-haml failed:\n" err))))))

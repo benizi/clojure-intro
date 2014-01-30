@@ -11,8 +11,7 @@
   [string]
   (-> string
       java.io.StringReader.
-      html/html-resource
-      (html/select [:body :> :*])))
+      html/html-resource))
 
 (defn with-style
   "Subs in the better stylesheet"
@@ -28,13 +27,20 @@
 
 (defn with-slides
   "Subs in the slide content"
-  [nodes & slides]
-  (-> nodes
-      (html/transform [:section] nil)
-      (html/transform [:body] (html/prepend slides))
-      ;; TODO - add marking for language
-      ;; (html/transform [(html/attr? :kind)] (html/content "code yay"))
-      ))
+  [nodes slide-html]
+  (let [slides (html/select slide-html [:body :> :*])
+        title (html/select slide-html [:title])
+        title (when-let [title (seq title)]
+                (-> title first :content))
+        style (html/select slide-html [:head :style])]
+    (-> nodes
+        (html/transform [:section] nil)
+        (html/transform [:body] (html/prepend slides))
+        (html/transform [:title] (if title (html/content title) identity))
+        (html/transform [:head] (if style (html/append style) identity))
+        ;; TODO - add marking for language
+        ;; (html/transform [(html/attr? :kind)] (html/content "code yay"))
+        )))
 
 (defn without-comments
   "Removes slides that have class .comment"
@@ -52,6 +58,12 @@
       (html/transform [:markdown :p] html/unwrap)
       (html/transform [:markdown] html/unwrap)))
 
+(defn with-highlighting-style
+  "Adds in the CSS for syntax highlighting"
+  [nodes]
+  (-> nodes
+      (html/transform [:head] (html/append {:tag :style :content ruby/css}))))
+
 (defn render
   [nodes]
   (->> nodes
@@ -63,6 +75,7 @@
   (let [slides (-> filename slurp parse-haml string->nodes)]
     (-> deck-js
         with-style
+        with-highlighting-style
         (with-slides slides)
         without-comments
         with-markdown
