@@ -28,6 +28,7 @@
   (route/files "/core" {:root "deck.js/core"})
   (route/files "/extensions" {:root "deck.js/extensions"})
   (route/files "/themes" {:root "deck.js/themes"})
+  (route/files "/images" {:root "images"})
   (GET "/modernizr.custom.js" [] (response/file-response "deck.js/modernizr.custom.js"))
   (GET "/jquery-1.7.2.min.js" [] (response/file-response "deck.js/jquery-1.7.2.min.js"))
   (route/not-found "Route not found"))
