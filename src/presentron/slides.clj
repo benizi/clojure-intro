@@ -11,8 +11,7 @@
   [string]
   (-> string
       java.io.StringReader.
-      html/html-resource
-      (html/select [:body :> :*])))
+      html/html-resource))
 
 (defn with-style
   "Subs in the better stylesheet"
