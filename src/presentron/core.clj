@@ -33,5 +33,6 @@
   (GET "/jquery-1.7.2.min.js" [] (response/file-response "deck.js/jquery-1.7.2.min.js"))
   (route/not-found "Route not found"))
 
-(defn -main [& [port]]
-  (run-jetty (handler/api presentron) {:port (Integer. (or port (System/getenv "PORT") 5000))}))
+(defn -main [& [port join]]
+  (run-jetty (handler/api presentron) {:port (Integer. (or port (System/getenv "PORT") 5000))
+                                       :join? (if (nil? join) true join)}))
