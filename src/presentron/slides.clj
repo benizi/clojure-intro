@@ -27,13 +27,20 @@
 
 (defn with-slides
   "Subs in the slide content"
-  [nodes & slides]
-  (-> nodes
-      (html/transform [:section] nil)
-      (html/transform [:body] (html/prepend slides))
-      ;; TODO - add marking for language
-      ;; (html/transform [(html/attr? :kind)] (html/content "code yay"))
-      ))
+  [nodes slide-html]
+  (let [slides (html/select slide-html [:body :> :*])
+        title (html/select slide-html [:title])
+        title (when-let [title (seq title)]
+                (-> title first :content))
+        style (html/select slide-html [:head :style])]
+    (-> nodes
+        (html/transform [:section] nil)
+        (html/transform [:body] (html/prepend slides))
+        (html/transform [:title] (if title (html/content title) identity))
+        (html/transform [:head] (if style (html/append style) identity))
+        ;; TODO - add marking for language
+        ;; (html/transform [(html/attr? :kind)] (html/content "code yay"))
+        )))
 
 (defn without-comments
   "Removes slides that have class .comment"
