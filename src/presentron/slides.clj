@@ -58,6 +58,12 @@
       (html/transform [:markdown :p] html/unwrap)
       (html/transform [:markdown] html/unwrap)))
 
+(defn with-highlighting-style
+  "Adds in the CSS for syntax highlighting"
+  [nodes]
+  (-> nodes
+      (html/transform [:head] (html/append {:tag :style :content ruby/css}))))
+
 (defn render
   [nodes]
   (->> nodes
@@ -69,6 +75,7 @@
   (let [slides (-> filename slurp parse-haml string->nodes)]
     (-> deck-js
         with-style
+        with-highlighting-style
         (with-slides slides)
         without-comments
         with-markdown
