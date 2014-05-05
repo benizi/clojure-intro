@@ -9,8 +9,6 @@
       io/reader
       slurp))
 
-(def *parser* (parser))
-
 (defn run-parser
   [stdin]
   (shell/sh "bundle" "exec" "ruby" "-e" (parser)
