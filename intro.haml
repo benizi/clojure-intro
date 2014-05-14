@@ -39,28 +39,29 @@
     %li
       :marked
         Solved all [4clojure.com](https://www.4clojure.com) problems.
+
+.slide
+  %h2 Clojure and Me - Toy apps
+  %ul
     %li
-      Built some toy apps:
+      :marked
+        [yu2.be](http://yu2.be/)
+      %ul
+        %li really simple YouTube® link shortener
+        %li Running on Heroku
+    %li
+      :marked
+        [these slides](https://github.com/benizi/clojure-intro)
       %ul
         %li
           :marked
-            [yu2.be](http://yu2.be/)
-          %ul
-            %li really simple YouTube® link shortener
-            %li Running on Heroku
+            [Ring](https://github.com/ring-clojure/ring)/[Compojure](https://github.com/weavejester/compojure) application
+        %li that parses HAML/Markdown with Ruby
         %li
+          Munges deck.js templates with
           :marked
-            [these slides](https://github.com/benizi/clojure-intro)
-          %ul
-            %li
-              :marked
-                [Ring](https://github.com/ring-clojure/ring)/[Compojure](https://github.com/weavejester/compojure) application
-            %li that parses HAML/Markdown with Ruby
-            %li
-              Munges deck.js templates with
-              :marked
-                [enlive](https://github.com/cgrand/enlive)
-            %li Syntax highlighting with Pygments (in Ruby)
+            [enlive](https://github.com/cgrand/enlive)
+        %li Syntax highlighting with Pygments (in Ruby)
 
 .slide
   %h2 Immutability
@@ -124,17 +125,27 @@
 
 .slide
   %h2 Clojure Basics - Comments
+  %ul
+    %li
+      Comments
+      :clojurecode
+        ; line-based
+        ; everything after ";" ignored by reader
+
+        ;; function-like
+        (comment ...) ; => nil
+        [1 (comment 2) 3] ; => [1 nil 3]
+
+    %li
+      REPL conventions
+      :clojurecode
+        user=> input ; this is user input
+        ; output     ; this is printed output
+        ; => val     ; this is a returned value
+
+.slide
+  %h2 Other comment types
   :clojurecode
-    ; line-based
-    ; everything after semicolon ignored by reader
-
-    ;; function-like
-    (comment ...) ; => nil
-    [1 (comment 2) 3] ; => [1 nil 3]
-
-    ; most useful for top-level forms
-    (comment defn somefunction ...)
-
     ;; Reader macro #_
     #_(...) ; form is completely elided
     [1 #_2 3] ; => [1 3]
@@ -144,21 +155,32 @@
                             ; but would be ignored
 
 .slide
-  %h2 Clojure Basics - Data types
-  :clojurecode
-    nil      ; equivalent to Java null      ;; nil
+  %h2 Clojure Basics - nil, bools
+  %ul
+    %li
+      nil = equivalent to Java null
+      :clojurecode
+        nil
+    %li
+      Booleans are Java Booleans
+      :clojurecode
+        true false
+    %li
+      Only nil and false are "falsey"
 
-    true                                    ;; Booleans
-    false    ; only nil and false
-             ; are "falsey"
-
-    (map class [                            ;; Numbers
-      1      ; => java.lang.Long
-      1.2    ; => java.lang.Double
-      1/2    ; => clojure.lang.Ratio
-      1N     ; => clojure.lang.BigInt
-      1M     ; => java.math.BigDecimal
-    ])
+.slide
+  %h2 Clojure Basics - numerics
+  %ul
+    %li
+      Clojure has several built-in numeric types
+      :clojurecode
+        (map class [
+          1      ; => java.lang.Long
+          1.2    ; => java.lang.Double
+          1/2    ; => clojure.lang.Ratio
+          1N     ; => clojure.lang.BigInt
+          1M     ; => java.math.BigDecimal
+        ])
 
 .slide
   %h2 Clojure Basics - Strings
@@ -198,15 +220,15 @@
 .slide
   %h2 Clojure Basics - Symbolics
   :clojurecode
+    'some-thing       ; => some-thing       ;; Symbols
+    'whatever/thing   ; => whatever/thing (namespaced)
+    'questionable?    ; => questionable?
+    'warn-!-yay       ; => warn-!-yay
+
     (name :stringy)   ; => "stringy"        ;; Keywords
     ::resolved        ; => :user/resolve
     (in-ns 'whatever)
     ::resolved        ; => :whatever/resolve
-
-    'some-thing       ; => some-thing       ;; Symbols
-    'whatever/thing   ; => whatever/thing
-    'questionable?    ; => questionable?
-    'warn-!-yay       ; => warn-!-yay
 
 .slide
   %h2 Clojure Basics - List-alikes
@@ -252,82 +274,132 @@
 
   %div.slide
     :marked
-      I'm being hand-wavy. The actual situation is [...more complex](http://blog.fogus.me/2012/03/27/compiling-clojure-to-javascript-pt-3-the-himera-model/),
+      Being hand-wavy. Actually [...more complex](http://blog.fogus.me/2012/03/27/compiling-clojure-to-javascript-pt-3-the-himera-model/),
       [especially for ClojureScript](http://blog.fogus.me/2012/04/25/the-clojurescript-compilation-pipeline/)
 
 .slide
   %h2 Clojure evaluation - Lists
   %ul
     %li
-      Lists (and symbols) are special
+      Lists and symbols are special
       :clojurecode
-        (eval (read-string "(first-item)"))
+        (first-item "arg1" 'thing)
         ; => CompilerException ...
         ; Unable to resolve symbol: first-item
     %li First item is resolved to something...
+    %li.slide ... more about namespaces later
 
 .slide
   %h2 Clojure evaluation - ...function
   %ul
     %li
-      If it's a function:
+      If first thing in a list resolves to a function:
       %ol
         %li Evaluate the remaining items
         %li Pass them as arguments to the function
-      :clojurecode
-        (x (y 1) (z "a"))
-        ; evaluate (y 1)
-        ;   evaluate 1 => 1
-        ;   call y with 1 => y-result
-        ; evaluate (z "a")
-        ;   evaluate "a" => 1
-        ;   call z with "a" => z-result
-        ; call x with y-result and z-result => x-result
+    %li
+      Example...
 
 .slide
-  %h2 Evaluation - ...special forms
+  %h2 Function evaluation example
+  :clojurecode
+    (prn (str (+ 1 4) 2 3))
+     'prn                  ; resolves to function
+      (str (+ 1 4) 2 3)    ; evaluate
+       'str                ; resolves to function
+        (+ 1 4)            ; evaluate
+         '+                ; resolves to function
+          1                ; evaluate => 1
+          4                ; evaluate => 4
+        '+ 1 4             ; apply => 5
+        2                  ; evaluate => 2
+        3                  ; evaluate => 3
+      'str 5 2 3           ; apply => "523"
+    'prn "523"             ; apply
+    ;   side effect: prints "523"
+    nil                    ; result
+
+.slide
+  %h2 Evaluation - special forms
+  %ul
+    %li If it's a special form, evaluate it specially
+    %li Examples...
+
+.slide
+  %h2 Special forms - def
   %ul
     %li
-      If it's a special form, evaluate it specially
-      %ul
-        %li
-          %strong def
-          interns symbol in the current namespace
-          :clojurecode
-            (def symbol init?)
-          Special because it's very low-level
-        %li
-          %strong if
-          evaluates a test and then one of the two branches
-          :clojurecode
-            (if test       ; test is evaluated first
-              when-true    ; not evaluated if test is false
-              when-false)  ; not evaluated if test is true
-          Special because parts of the form need to remain unevaluated
+      %strong def
+      interns symbol in current namespace
+      :clojurecode
+        (def symbol init?)
+    %li Special because it's very low-level
+    %li
+      %strong defn
+      is a macro around
+      %strong def
+      (not a special form)
 
 .slide
-  %h2 Evaluation - ...special forms
+  %h2 Special forms - if
+  %ul
+    %li
+      %strong if
+      evaluates conditional, then one of two branches
+      :clojurecode
+        (if test       ; test evaluated first
+          when-true    ; evaluated if true
+          when-false)  ; evaluated if false
+    %li Special because parts remain unevaluated
+
+.slide
+  %h2 Special forms - do
   %ul
     %li
       %strong do
-      runs the forms it contains, discarding the results except the last
+      runs the forms it contains
+    %li
+      discards results except the last
       :clojurecode
         (do
+          (+ 10 20)       ; => 30, but discarded
           (println "Yay") ; => prints: Yay
-          1234) ; => evaluates to 1234
+          1234)           ; => evaluates to 1234
+        ; => 1234
+    %li Special because it's essentially a no-op
+
+.slide
+  %h2 Special forms - quote
+  %ul
     %li
       %strong quote
       prevents evaluation of its arguments
       :clojurecode
         (quote (rm-rf "/"))
         ; => (rm-rf "/")
-      Special because its arguments are unevaluated
+    %li Special because args are unevaluated
     %li
       Equivalent to the reader macro:
       %strong '
       :clojurecode
         (= (quote (a b c))
            '(a b c))
+
+.slide
+  %h2 Evaluation - ...special forms
+  %ul
+    %li
+      About 20 special forms
+      :clojurecode
+        ;; definitions, bindings
+        def let quote var fn
+        ;; control-flow
+        if do loop recur
+        ;; dealing w/ Exceptions
+        throw try catch
+        ;; Java Interop forms
+        . new set!
+    %li Otherwise, those are all the evaluation rules
 
 .slide
   %h2 Functions on hash maps
@@ -385,43 +457,64 @@
     (into {} [:a 1] [:b 2]) ; => {:a 1, :b 2}
 
 .slide
-  %h2 Clojure Let, binding forms
+  %h2 Binding forms
   :clojurecode
-    ;; Evaluate body with local bindings as expressed by [forms]
-    (let [forms] body)
+    ;; eval body with local bindings
+    (let [bindings] body)
 
     ;; Many binding forms:
 
     name value         ; binds value to name
-    (let [a (+ 1 2 3)]
-      a) ; => 6
 
+    (let [a (+ 1 2 3)] a)
+    ;     | \- value = evaluated (+ 1 2 3)
+    ;     \- name = a
+    ; => 6
+
+.slide
+  %h2 Sequential binding forms
+  :clojurecode
     [a b ...] value    ; binds a to 1st element
                        ; binds b to 2nd element
                        ; ...
-    (let [[a b] '(x y)]
-      (prn {:a a :b b})) ; => prints: {:a x, :b y}
+
+    (let [[a b] '(x y)] {:thing-1 a :thing-2 b})
+    ; => {:thing-1 x :thing-2 y}
+
+    ;; unmatched names get nil
+    (let [[a b] '(x)] {:thing-1 a :thing-2 b})
+    ; => {:thing-1 x :thing-2 nil}
 
 .slide
-  %h2 Binding forms (cont.)
+  %h2 Map-like binding forms
   :clojurecode
-    ;; Map-like binding forms
+    ;; example value
+    (def req {:type :get, :url "/"})
 
-    (def req {:request-type :get, :url "/"})
+    ;; pulls :key out
+    {name :key}
+    (let [{x :type} req] x)
+    ; => :get
 
-    {name :key}        ; pulls :key out of a map-like
-    (let [{x :request-type} req]
-      x) ; => :get
+    ;; multiple keys at once,
+    {:keys [a b c]}
 
-    {:keys [a b c]}    ; pull multiple keys at once,
-                       ; where key is same as name
-    (let [{:keys [request-type url]} req]
-      (str "TYPE: " request-type " for " url))
-    ; => "TYPE: :get for /"
+    (let [{:keys [type url]} req]
+      {:t type :u url})
+    ; => {:t :get :u "/"}
 
-    {:keys [...] :as name}  ; also assign whole to name
-    (let [{:keys [url] :as r} req]
-      (= r req)) ; => true
+.slide
+  %h2 Map-like binding forms
+  :clojurecode
+    ;; also assign whole to a name
+    {:keys [...] :as name}
+
+    (let [{:keys [url] :as r} req] (= r req))
+    ; => true
+
+    ;; non-keyword keys:
+    {:strs [url]} value   ;; string keys
+    {:syms [url]} value   ;; symbol keys
 
 .slide
   %h2 Lazy sequences
@@ -452,7 +545,8 @@
     ;      (f (second collection))
     ;      ...)
 
-    (map identity [1 2 3]) ; => (1 2 3)          ;; result is list
+    ;; result is a sequence
+    (map identity [1 2 3])  ; => (1 2 3)
     (map identity '(1 2 3)) ; => (1 2 3)
     (map identity #{1 2 3}) ; => (1 2 3)
 
@@ -468,33 +562,57 @@
     ; => ([:a 0] [:b 1] [:c 2])
 
 .slide
+  %h2 Map is lazy - dorun
+  :clojurecode
+    user=> (def x (map prn [1 2 3]))
+    ; => #'user/x  ;; no prints
+
+    user=> (realized? x)
+    ; => false
+
+    user=> x
+    ; (1
+    ; 2
+    ; 3
+    ; nil nil nil) ;; prints interspersed w/ result
+
+    user=> (dorun (map prn [1 2 3]))
+    ; 1
+    ; 2
+    ; 3
+    ; => nil ;; dorun forces realization, ignores result
+
+.slide
   %h2 Functional programming
   :clojurecode
     ;; Fold over a list
     (reduce f initial-value? collection)
-    (reduce + 0 [1 2 3 4])
+    (reduce str "" [\a \b \c \d])
     ; => like repeatedly doing: (f value next-value)
-    ; => (+ 0 1) => 1
-    ; => (+ 1 2) => 3
-    ; => (+ 3 3) => 6
-    ; => (+ 6 4) => 10
+    ; => (str "" \a)    ; => "a"
+    ; => (str "a" \b)   ; => "ab"
+    ; => (str "ab" \c)  ; => "abc"
+    ; => (str "abc" \d) ; => "abcd"
 
 .slide
   %h2 Functional programming
   :clojurecode
     ;; Composition
-    (comp f g) ; => function that applies g, then f to the result
-    (comp inc -) ; => function that negates, then increments
-    ((comp inc -) 42) ; => -41
+    (comp f g)          ; => fn that applies g, then f
+    #<core$comp$fn__4154...@2cb2e792>
+    (comp str inc)      ; => fn that inc's, then str's
+    ((comp str inc) 42) ; => "43"
 
     ;; Partial application
-    (partial f other-args...) ; => function that applies f to args and other-args
+    (partial f other-args...)
+    ; => fn that applies f to args and other-args
 
-    (def map-inc (partial map inc))
-    (map-inc [1 2 3 4]) ; => (2 3 4 5)
+    (def higher (partial map (comp str inc)))
+    (higher [1 2 3 4]) ; => ("2" "3" "4" "5")
 
-    (def five-adder (partial + 5))
-    (five-adder 10 20) ; => 35
+    (def blue-label (partial create-label :bg "blue"))
+    (blue-label "Some text") ; => blue label
+    ;; from PEP 0309
 
 .slide
   %h2 Clojure threading macros
@@ -512,43 +630,95 @@
     (apply str (map str [:a :b]))
 
 .slide
-  %h2 Clojure Basics - Defining functions
+  %h2 Clojure Basics - defn
   :clojurecode
     ;; defn is a macro, which expands to def of a (fn) form
     (defn entry-printer
-      "This is an example of binding" ; doc-string
-      [[key val]]
-      (println key " => " val))
+      "This is an example of binding"  ; doc-string
+      [[key val :as entry]]            ; parameters
+      (println entry "=" key "=>" val) ; body
+      )
 
     (entry-printer [:a 1])
-    ; => prints:
-    ; :a => 1
+    ; [:a 1] = :a => 1
+    ; => nil
 
     (dorun (map entry-printer {:a 1 :b 2}))
-    ; => prints:
-    ; :a => 1
-    ; :b => 2
+    ; [:a 1] = :a => 1
+    ; [:b 2] = :b => 2
     ; => nil
 
 .slide
-  %h2 Clojure Namespaces
+  %h2 Namespaces - use, import
   %ul
-    %li Map of symbols to vars
-    %li Named like Java packages (reverse domain names)
+    %li Namespaces are maps of symbols to Vars
     %li
-      Example:
-      :marked
-        `com.benizi.superlibrary`
+      Use = import all symbols from another ns
+      :clojurecode
+        user=> (use 'clojure.repl) ;; discouraged
+        user=> #'doc
+        #'clojure.repl/doc
+    %li
+      Import = Java Class imports
+      :clojurecode
+        user=> (import 'java.io.Reader)
+        user=> Reader
+        java.io.Reader
+        ;; multiple:
+        user=> (import '[java.io Reader StringReader])
 
-  :clojurecode
-    ;; ns macro
-    (ns some.namespace
-      (:require [clojure.repl :as repl])             ;; loads and aliases
-      (:require [clojure.repl])                      ;; just loads
-      (:use [clojure.repl]) ; discouraged            ;; imports everything
-      (:require [clojure.repl :refer (doc source)])  ;; import specific vars
-      (:import [java.lang String])                   ;; String is available
-      ...)
+.slide
+  %h2 Namespaces - load
+  %ul
+    %li
+      Load = lower-level loading
+    %li
+      Not frequently used directly(?)
+      :clojurecode
+        ;; classpath-relative
+        user=> (load "/clojure.set")
+
+        ;; relative to current namespace directory
+        presentron.core=> (load "something")
+        ; => could not load presentron/something__init.class
+        ;    or             presentron/something.clj
+
+.slide
+  %h2 Namespaces - require
+  %ul
+    %li
+      Require = load and optionally alias another ns
+      :clojurecode
+        user=> (require 'clojure.repl)
+        user=> (clojure.repl/doc str)
+
+        ; :as lets you use a shorter namespace alias
+        user=> (require '[clojure.repl :as repl])
+        user=> (repl/doc str)
+
+        ; :refer imports specific symbols
+        user=> (require '[clojure.repl :refer (doc)])
+        user=> (doc str)
+
+        ; :refer :all = use
+        user=> (require '[clojure.repl :refer :all])
+        user=> (doc str)
+
+.slide
+  %h2 Namespaces - ns macro
+  %ul
+    %li Wrapper around the functions mentioned
+    %li
+      No need to quote things in this macro
+      :clojurecode
+        (ns com.benizi.superlibrary
+          (:require [clojure.java.io :as io]
+                    [clojure.string :as string])
+          (:require [clojure.repl :refer (doc source)])
+          (:use [clojure.repl])
+          (:import [java.lang String])
+          ;...
+          )
 
 .slide.comment
   %h2 Clojure Basics - Don't forget immutability
