@@ -1,2 +1,3 @@
 #!/bin/sh
+find / -name bundle 2>/dev/null
 bundle config build.charlock_holmes --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
