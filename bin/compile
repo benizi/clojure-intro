@@ -11,4 +11,16 @@
 ### BUNDLE_BUILD__CHARLOCK_HOLMES: "--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
 ### CONFIG
 # gem install charlock_holmes -v 0.6.9.4 --no-ri --no-rdoc -- --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
+
+BUILD_DIR=$1
+script=$BUILD_DIR/.profile.d/007_charlock.sh
+
+cat <<TOPIC
+-----> creating profile script
+TOPIC
+
+mkdir -p $BUILD_DIR/.profile.d
+cat > $script <<PROFILE
 export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
+PROFILE
+. $script
