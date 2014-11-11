@@ -1,2 +1,2 @@
 #!/bin/sh
-apt-get install -y libicu-dev
+export "BUNDLE_BUILD__CHARLOCK_HOLMES=--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"

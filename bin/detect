@@ -1,2 +1,2 @@
 #!/bin/sh
-printf 'Custom\n'
+printf 'Repo-specific\n'
