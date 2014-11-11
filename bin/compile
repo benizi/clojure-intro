@@ -10,4 +10,5 @@
 ### ---
 ### BUNDLE_BUILD__CHARLOCK_HOLMES: "--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
 ### CONFIG
-gem install charlock_holmes -v 0.6.9.4 --no-ri --no-rdoc -- --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
+# gem install charlock_holmes -v 0.6.9.4 --no-ri --no-rdoc -- --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
+export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
