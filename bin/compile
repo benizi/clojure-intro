@@ -1,2 +1,2 @@
 #!/bin/sh
-export "BUNDLE_BUILD__CHARLOCK_HOLMES=--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
+bundle config build.charlock_holmes --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
