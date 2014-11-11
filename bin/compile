@@ -5,8 +5,9 @@
 # /app/vendor/bundle/ruby/1.9.1/gems/bundler-1.6.3/lib/bundler/man/bundle
 # /app/vendor/bundle/ruby/1.9.1/bin/bundle
 # /app/vendor/bundle/ruby/1.9.1/bin/bundle config build.charlock_holmes --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
-mkdir -p .bundle
-cat > .bundle/config <<CONFIG
----
-BUNDLE_BUILD__CHARLOCK_HOLMES: "--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
-CONFIG
+### mkdir -p .bundle
+### cat > .bundle/config <<CONFIG
+### ---
+### BUNDLE_BUILD__CHARLOCK_HOLMES: "--with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include"
+### CONFIG
+gem install charlock_holmes -v 0.6.9.4 -- --with-icu-lib=/app/.apt/usr/lib --with-icu-include=/app/.apt/usr/include
