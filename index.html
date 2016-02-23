@@ -94,6 +94,7 @@
     var deck;
     try {
       deck = window.location.pathname.substring(1);
+      deck = deck.split('/').reverse()[0];
       deck = deck.split('.')[0];
     } catch (e) {
     }
