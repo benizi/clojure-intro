@@ -91,9 +91,15 @@
       });
       return ret;
     }
+    var deck;
+    try {
+      deck = window.location.pathname.substring(1);
+      deck = deck.split('.')[0];
+    } catch (e) {
+    }
     window.slides = remark.create({
       ratio: param('ratio', '4:3'),
-      sourceUrl: param('slides', 'intro') + '.md',
+      sourceUrl: (deck || param('slides', 'intro')) + '.md',
       highlightStyle: param('style', codestyles[0]),
       highlightLines: param('hl', true),
       highlightSpans: param('hls', true),
