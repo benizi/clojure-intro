@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <style>
+      /* normal,headers */
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600);
+      /* code */
+      @import url(https://fonts.googleapis.com/css?family=Inconsolata);
+
+      body {
+        font-family: 'Open Sans', sans-serif;
+      }
+      h1, h2 {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: #c00;
+        border-bottom: 3px solid #ccc;
+      }
+      .title h1 {
+        border-bottom: none;
+      }
+      h3 {
+        margin-bottom: 0;
+      }
+      .remark-code, .remark-inline-code {
+        font-family: 'Inconsolata';
+        line-height: 1.2em;
+      }
+      .fa a {
+        color: inherit;
+      }
+      .pages {
+        display: block;
+        white-space: pre;
+        font-family: 'Inconsolata', monospace;
+        font-size: x-small;
+        clear: left;
+      }
+      .pass { color: #0f0; background-color: #000; }
+      .fail { color: #f00; background-color: #000; }
+      .pending { color: #fc0; background-color: #000; }
+      pre { border: 1px solid #888; }
+      .strike { text-decoration: line-through; }
+      .special { font-weight: bold; }
+    </style>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+  </head>
+  <body>
+  <script>
+    var codestyles = [
+      'xcode',
+      'railscasts',
+      'agate',
+      'github',
+      'googlecode',
+      'idea',
+      'vs',
+      'zenburn'
+    ];
+    // lol, dumb:
+    function lineDrawingSlideNumber(cur, tot) {
+      // ├┤╟╢┼─
+      var f = '';
+      f += (cur == 1) ? '\u255f' : '\u251c';
+      var i;
+      for (i=2; i<cur; i++) f += '\u2500';
+      if (cur != 1 && cur != tot) f += '\u253c';
+      for (i=cur; i<(tot-1); i++) f += '\u2500';
+      f += (cur == tot) ? '\u2562' : '\u2524';
+      return f;
+    }
+    // lol, dumber:
+    function batterySlideNumber(cur, tot) {
+      var n = (cur == 1) ? 4
+        : (cur == tot) ? 0
+        : (4 - Math.ceil(3 * cur / tot));
+      var curtxt = "" + cur;
+      while (curtxt.length < ("" + tot).length) curtxt = '&nbsp;' + curtxt;
+      var bat = '.fa.fa-battery-' + n + '[]';
+      var txt = '.pages[' + curtxt + '/' + tot + ']';
+      return remark.convert(bat + ' ' + txt);
+    }
+    function param(name, defval) {
+      var ret = defval;
+      window.location.search.substring(1).split('&').forEach(function(kv) {
+        var kvs = kv.split('=');
+        var k = kvs[0];
+        if (k !== name) return;
+        ret = kvs.slice(1).join('=');
+      });
+      return ret;
+    }
+    window.slides = remark.create({
+      ratio: param('ratio', '4:3'),
+      sourceUrl: param('slides', 'intro') + '.md',
+      highlightStyle: param('style', codestyles[0]),
+      highlightLines: param('hl', true),
+      highlightSpans: param('hls', true),
+      slideNumberFormat: batterySlideNumber,
+      countIncrementalSlides: false
+    });
+    try {
+      var title = slides.getSlides()[0].properties.title;
+      var el = document.createElement('title');
+      var txt = document.createTextNode(title);
+      el.appendChild(txt);
+      document.head.appendChild(el);
+    } catch (e) {
+    }
+  </script>
+  </body>
+</html>
