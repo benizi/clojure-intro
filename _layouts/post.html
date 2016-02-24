@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html>
   <head>
@@ -44,6 +47,7 @@
       .strike { text-decoration: line-through; }
       .special { font-weight: bold; }
     </style>
+    <title>{{page.title}}</title>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
   </head>
   <body>
@@ -91,16 +95,9 @@
       });
       return ret;
     }
-    var deck;
-    try {
-      deck = window.location.pathname.substring(1);
-      deck = deck.split('/').reverse()[0];
-      deck = deck.split('.')[0];
-    } catch (e) {
-    }
     window.slides = remark.create({
       ratio: param('ratio', '4:3'),
-      sourceUrl: (deck || param('slides', 'intro')) + '.md',
+      sourceUrl: '/{{page.slides}}.md',
       highlightStyle: param('style', codestyles[0]),
       highlightLines: param('hl', true),
       highlightSpans: param('hls', true),
@@ -109,10 +106,12 @@
     });
     try {
       var title = slides.getSlides()[0].properties.title;
-      var el = document.createElement('title');
-      var txt = document.createTextNode(title);
-      el.appendChild(txt);
-      document.head.appendChild(el);
+      if (title.length) {
+        var el = document.createElement('title');
+        var txt = document.createTextNode(title);
+        el.appendChild(txt);
+        document.head.appendChild(el);
+      }
     } catch (e) {
     }
   </script>
