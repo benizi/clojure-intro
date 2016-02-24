@@ -1,0 +1,10 @@
+# Site settings
+title: Slides
+description: "Slides from presentations I've given over the past several years."
+baseurl: ""
+url: "http://yourdomain.com" # the base hostname & protocol for your site
+twitter_username: benizi
+github_username: benizi
+
+# Build settings
+markdown: kramdown
