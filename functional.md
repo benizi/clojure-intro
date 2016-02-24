@@ -237,8 +237,8 @@ qsort (p:xs) = (qsort less) ++ [p] ++ (qsort more)
 
 ## Hash-Array Mapped Tries
 
-<img style="width: 40%" src="/images/persistenthashmap1.png"/>
-<img style="width: 40%" src="/images/persistenthashmap-pathcopy.png"/>
+<img style="width: 40%" src="/clojure-intro/images/persistenthashmap1.png"/>
+<img style="width: 40%" src="/clojure-intro/images/persistenthashmap-pathcopy.png"/>
 
 ---
 

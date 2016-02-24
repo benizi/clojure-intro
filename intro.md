@@ -60,8 +60,8 @@ title: Intro to Clojure
 
 ## Hash-Array Mapped Tries
 
-<img style="width: 40%" src="/images/persistenthashmap1.png"/>
-<img style="width: 40%" src="/images/persistenthashmap-pathcopy.png"/>
+<img style="width: 40%" src="/clojure-intro/images/persistenthashmap1.png"/>
+<img style="width: 40%" src="/clojure-intro/images/persistenthashmap-pathcopy.png"/>
 
 ---
 
@@ -787,7 +787,7 @@ layout: false
     [clojure-koans](https://github.com/functional-koans/clojure-koans)
   - Practice problems [4clojure](http://www.4clojure.com)
       - user: [benizi](http://www.4clojure.com/user/benizi)
-              ![benizi](/images/4clojure.png)
+              ![benizi](/clojure-intro/images/4clojure.png)
       - current rank: (T-)1/27,671.
       - Quantity. Not quality.
   - Good for any language, but very math-heavy: [Project Euler](http://projecteuler.net/)

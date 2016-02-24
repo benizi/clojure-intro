@@ -25,7 +25,7 @@ title: Short Intro to core.async
 
 - [#1 (tied) on 4clojure](http://www.4clojure.com/users) (quantity, not quality)
 
-![4clojure stats](/images/4clojure.png)
+![4clojure stats](/clojure-intro/images/4clojure.png)
 ---
 
 ## About core.async

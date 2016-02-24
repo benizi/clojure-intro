@@ -97,7 +97,7 @@ layout: null
     }
     window.slides = remark.create({
       ratio: param('ratio', '4:3'),
-      sourceUrl: '/{{page.slides}}.md',
+      sourceUrl: '{{site.baseurl}}/{{page.slides}}.md',
       highlightStyle: param('style', codestyles[0]),
       highlightLines: param('hl', true),
       highlightSpans: param('hls', true),
