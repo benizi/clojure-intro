@@ -81,7 +81,7 @@ Highly recommended reading: [Karl Krukow blog post](http://blog.higher-order.net
 - Follow along(!)
 - [Himera](http://himera.herokuapp.com) - online ClojureScript REPL by [@fogus](https://twitter.com/fogus).
 - [http://himera.herokuapp.com](http://himera.herokuapp.com)
-<iframe src="http://himera.herokuapp.com/index.html"
+<iframe src="//himera.herokuapp.com/index.html"
   style="width: 100%; min-height: 4in"
   scrolling="no">
 </iframe>

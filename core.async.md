@@ -119,7 +119,7 @@ title: Short Intro to core.async
 ---
 
 ## Go macro
-<iframe src="http://clojure.github.io/core.async/index.html#clojure.core.async/go"
+<iframe src="//clojure.github.io/core.async/index.html#clojure.core.async/go"
   scrolling="no" style="width: 80%; height: 10em; overflow: hidden"></iframe>
 --
 <br>

@@ -254,7 +254,7 @@ Highly recommended reading: [Karl Krukow blog post](http://blog.higher-order.net
   [@fogus](https://twitter.com/fogus).
   Follow along(!).
 - [http://himera.herokuapp.com](http://himera.herokuapp.com)
-<iframe src="http://himera.herokuapp.com/index.html"
+<iframe src="//himera.herokuapp.com/index.html"
   style="width: 100%; min-height: 4in" scrolling="no">
 </iframe>
 
