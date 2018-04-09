@@ -8,3 +8,6 @@ github_username: benizi
 
 # Build settings
 markdown: kramdown
+
+# I want accurate dates, but for things to be published as they're written
+future: true
